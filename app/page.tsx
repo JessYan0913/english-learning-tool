@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import confetti from "canvas-confetti"
 import TiptapInput, { type TiptapInputRef } from "../components/tiptap-input"
+import { Button } from "@/components/ui/button"
 
 // 词组数据
 const phrases = [
@@ -310,23 +311,27 @@ export default function EnglishLearningTool() {
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8 relative">
       {mode !== "completed" && (
         <>
-          <button
+          <Button
             onClick={handlePrevPhrase}
             disabled={currentPhrase === 0 || mode === "practice"}
             className="fixed left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-card shadow-lg hover:shadow-xl border border-border flex items-center justify-center text-2xl text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-all z-10"
             title={`上一个词组 (←) ${currentPhrase > 0 ? phrases[currentPhrase - 1].phrase : ""}`}
+            variant="outline"
+            size="icon"
           >
             ←
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={handleNextPhrase}
             disabled={currentPhrase === phrases.length - 1 || mode === "practice"}
             className="fixed right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-card shadow-lg hover:shadow-xl border border-border flex items-center justify-center text-2xl text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-all z-10"
             title={`下一个词组 (→) ${currentPhrase < phrases.length - 1 ? phrases[currentPhrase + 1].phrase : ""}`}
+            variant="outline"
+            size="icon"
           >
             →
-          </button>
+          </Button>
         </>
       )}
 
@@ -340,18 +345,22 @@ export default function EnglishLearningTool() {
             </div>
 
             <div className="flex justify-center gap-6">
-              <button
+              <Button
                 onClick={handleViewSummary}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                className="bg-primary hover:bg-primary/90 text-accent-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                variant="secondary"
+                size="lg"
               >
                 查看学习总结
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleRestart}
                 className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                variant="secondary"
+                size="lg"
               >
                 重新开始
-              </button>
+              </Button>
             </div>
           </div>
         ) : mode === "learn" ? (
@@ -379,12 +388,14 @@ export default function EnglishLearningTool() {
             </div>
 
             <div className="flex items-center justify-center">
-              <button
+              <Button
                 onClick={handleStartPractice}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                className="bg-primary hover:bg-primary/90 text-accent-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
+                variant="secondary"
+                size="lg"
               >
                 开始练习 <span className="text-sm opacity-75">(Enter)</span>
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
@@ -429,13 +440,15 @@ export default function EnglishLearningTool() {
 
               <div className="mt-8 flex justify-center">
                 {!showResult ? (
-                  <button
+                  <Button
                     onClick={handleSubmitAnswer}
                     disabled={!userAnswer.trim()}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                    className="bg-primary hover:bg-primary/90 text-accent-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                    variant="secondary"
+                    size="lg"    
                   >
                     检查答案
-                  </button>
+                  </Button>
                 ) : isCorrect ? (
                   <div className="flex items-center gap-3 text-primary text-xl font-medium">
                     <span className="text-2xl">✓</span>
@@ -446,14 +459,17 @@ export default function EnglishLearningTool() {
             </div>
 
             <div className="flex items-center justify-center gap-8">
-              <button
+              <Button
+                size="lg"
                 onClick={handleBackToLearn}
                 className="rounded-full px-8 py-3 hover:bg-muted text-muted-foreground"
+                variant="ghost"
               >
                 返回学习 <span className="text-xs text-muted-foreground/60">(Esc)</span>
-              </button>
+              </Button>
 
-              <button
+              <Button
+                size="lg"
                 onClick={() => {
                   if (currentExercise < phrase.exercises.length - 1) {
                     setCurrentExercise(currentExercise + 1)
@@ -469,9 +485,10 @@ export default function EnglishLearningTool() {
                   }
                 }}
                 className="rounded-full px-12 py-4 text-xl font-medium border-2 border-border hover:bg-muted bg-transparent"
+                variant="outline"
               >
                 跳过
-              </button>
+              </Button>
             </div>
           </div>
         )}
