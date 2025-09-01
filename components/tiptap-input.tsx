@@ -42,6 +42,7 @@ const TiptapInput = forwardRef<TiptapInputRef, TiptapInputProps>(
     const isUpdatingRef = useRef(false)
 
     const editor = useEditor({
+      immediatelyRender: false,
       extensions: [StarterKit, TextStyle, Color.configure({ types: [TextStyle.name] })],
       content: value,
       onUpdate: ({ editor }) => {
