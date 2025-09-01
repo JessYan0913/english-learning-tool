@@ -153,18 +153,18 @@ export default function EnglishLearningTool() {
     // 左下角喷射
     confetti({
       particleCount: 100,
-      angle: 45,
+      angle: 60,
       spread: 55,
-      origin: { x: 0.1, y: 0.9 },
+      origin: { x: 0, y: 1 },
       colors: ["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57"],
     })
 
     // 右下角喷射
     confetti({
       particleCount: 100,
-      angle: 135,
+      angle: 120,
       spread: 55,
-      origin: { x: 0.9, y: 0.9 },
+      origin: { x: 1, y: 1 },
       colors: ["#ff6b6b", "#4ecdc4", "#45b7d1", "#96ceb4", "#feca57"],
     })
 
