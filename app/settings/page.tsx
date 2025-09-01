@@ -29,7 +29,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-8">
+    <div className="min-h-screen flex items-center justify-center p-8">
       <div className="w-full max-w-2xl">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-light mb-4">设置</h1>
@@ -37,7 +37,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="space-y-8">
-          <Card>
+          <Card className="bg-transparent">
             <CardHeader>
               <CardTitle className="text-2xl">外观</CardTitle>
               <CardDescription>自定义应用的外观和感觉</CardDescription>
@@ -76,7 +76,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-transparent">
             <CardHeader>
               <CardTitle className="text-2xl">学习</CardTitle>
               <CardDescription>调整学习相关的设置</CardDescription>
@@ -122,7 +122,7 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-transparent">
             <CardHeader>
               <CardTitle className="text-2xl">数据</CardTitle>
               <CardDescription>管理你的学习数据</CardDescription>
