@@ -1,47 +1,48 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+'use client';
+import { useEffect, useState } from 'react';
+
+import { useRouter } from 'next/navigation';
 
 interface Exercise {
-  chinese: string
-  answer: string
+  chinese: string;
+  answer: string;
 }
 
 interface Phrase {
-  id: number
-  phrase: string
-  meaning: string
-  example: string
-  exercises: Exercise[]
+  id: number;
+  phrase: string;
+  meaning: string;
+  example: string;
+  exercises: Exercise[];
 }
 
 interface LearningData {
-  phrases: Phrase[]
-  completedAt: string
+  phrases: Phrase[];
+  completedAt: string;
 }
 
 export default function SummaryPage() {
-  const router = useRouter()
-  const [learningData, setLearningData] = useState<LearningData | null>(null)
+  const router = useRouter();
+  const [learningData, setLearningData] = useState<LearningData | null>(null);
 
   useEffect(() => {
-    const data = localStorage.getItem("learningData")
+    const data = localStorage.getItem('learningData');
     if (data) {
-      setLearningData(JSON.parse(data))
+      setLearningData(JSON.parse(data));
     } else {
       // 如果没有学习数据，跳转回主页
-      router.push("/")
+      router.push('/');
     }
-  }, [router])
+  }, [router]);
 
   const handleBackToHome = () => {
-    router.push("/")
-  }
+    router.push('/');
+  };
 
   const handleRestartLearning = () => {
-    localStorage.removeItem("learningData")
-    router.push("/")
-  }
+    localStorage.removeItem('learningData');
+    router.push('/');
+  };
 
   if (!learningData) {
     return (
@@ -50,16 +51,16 @@ export default function SummaryPage() {
           <div className="text-3xl font-light text-gray-400">加载中...</div>
         </div>
       </div>
-    )
+    );
   }
 
-  const completedDate = new Date(learningData.completedAt).toLocaleDateString("zh-CN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
+  const completedDate = new Date(learningData.completedAt).toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
     <div className="min-h-screen bg-white p-8">
@@ -81,7 +82,7 @@ export default function SummaryPage() {
                 <h3 className="text-3xl font-light text-gray-900 font-mono">{phrase.phrase}</h3>
                 <span className="text-2xl text-gray-500">- {phrase.meaning}</span>
               </div>
-              <p className="text-xl text-gray-600 italic mb-6 ml-18">"{phrase.example}"</p>
+              <p className="text-xl text-gray-600 italic mb-6 ml-18">{`"${phrase.example}"`}</p>
               <div className="space-y-4 ml-18">
                 <p className="text-lg text-gray-500 font-medium">练习题目：</p>
                 {phrase.exercises.map((exercise, exerciseIndex) => (
@@ -111,5 +112,5 @@ export default function SummaryPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,0 +1,60 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": ["next/core-web-vitals", "plugin:import/typescript", "plugin:import/recommended", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["import", "simple-import-sort", "react", "prettier"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": ["tsconfig.json"]
+      }
+    }
+  },
+  "rules": {
+    "import/order": "off",
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          ["^\\u0000"],
+          ["^\\\\.", "^\\\\..", "^\\\\...", "^\\\\/"],
+          ["^react$", "^react-dom$", "^react-router-dom$"],
+          ["^@?\\w"],
+          ["^"],
+          ["^\\.", "^\\..", "^\\...", "^\\/"],
+          ["\\."]
+        ]
+      }
+    ],
+    "simple-import-sort/exports": "error",
+    "import/extensions": "off",
+    "import/no-unresolved": ["error", { "ignore": ["geist/font/sans", "geist/font/mono"] }],
+    "import/no-extraneous-dependencies": "error",
+    "import/no-unassigned-import": "off",
+    "import/no-named-as-default": "off",
+    "react/display-name": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "semi": true,
+        "tabWidth": 2,
+        "printWidth": 120,
+        "trailingComma": "es5",
+        "endOfLine": "auto"
+      }
+    ]
+  }
+}

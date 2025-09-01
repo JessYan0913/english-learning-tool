@@ -1,32 +1,33 @@
-"use client"
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
+'use client';
+import { useEffect, useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
-    theme: "light",
-    language: "zh-CN",
+    theme: 'light',
+    language: 'zh-CN',
     autoPlay: true,
     showHints: true,
-    difficulty: "beginner",
-  })
+    difficulty: 'beginner',
+  });
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem("appSettings")
+    const savedSettings = localStorage.getItem('appSettings');
     if (savedSettings) {
-      setSettings(JSON.parse(savedSettings))
+      setSettings(JSON.parse(savedSettings));
     }
-  }, [])
+  }, []);
 
   const handleSettingChange = (key: string, value: any) => {
-    const newSettings = { ...settings, [key]: value }
-    setSettings(newSettings)
-    localStorage.setItem("appSettings", JSON.stringify(newSettings))
-  }
+    const newSettings = { ...settings, [key]: value };
+    setSettings(newSettings);
+    localStorage.setItem('appSettings', JSON.stringify(newSettings));
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-8">
@@ -47,7 +48,7 @@ export default function SettingsPage() {
                 <Label htmlFor="theme" className="text-base">
                   主题
                 </Label>
-                <Select value={settings.theme} onValueChange={(value) => handleSettingChange("theme", value)}>
+                <Select value={settings.theme} onValueChange={(value) => handleSettingChange('theme', value)}>
                   <SelectTrigger className="h-12">
                     <SelectValue placeholder="选择主题" />
                   </SelectTrigger>
@@ -63,7 +64,7 @@ export default function SettingsPage() {
                 <Label htmlFor="language" className="text-base">
                   语言
                 </Label>
-                <Select value={settings.language} onValueChange={(value) => handleSettingChange("language", value)}>
+                <Select value={settings.language} onValueChange={(value) => handleSettingChange('language', value)}>
                   <SelectTrigger className="h-12">
                     <SelectValue placeholder="选择语言" />
                   </SelectTrigger>
@@ -86,7 +87,7 @@ export default function SettingsPage() {
                 <Label htmlFor="difficulty" className="text-base">
                   难度级别
                 </Label>
-                <Select value={settings.difficulty} onValueChange={(value) => handleSettingChange("difficulty", value)}>
+                <Select value={settings.difficulty} onValueChange={(value) => handleSettingChange('difficulty', value)}>
                   <SelectTrigger className="h-12">
                     <SelectValue placeholder="选择难度" />
                   </SelectTrigger>
@@ -105,7 +106,7 @@ export default function SettingsPage() {
                 <Switch
                   id="autoPlay"
                   checked={settings.autoPlay}
-                  onCheckedChange={(checked) => handleSettingChange("autoPlay", checked)}
+                  onCheckedChange={(checked) => handleSettingChange('autoPlay', checked)}
                 />
               </div>
 
@@ -116,7 +117,7 @@ export default function SettingsPage() {
                 <Switch
                   id="showHints"
                   checked={settings.showHints}
-                  onCheckedChange={(checked) => handleSettingChange("showHints", checked)}
+                  onCheckedChange={(checked) => handleSettingChange('showHints', checked)}
                 />
               </div>
             </CardContent>
@@ -141,5 +142,5 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

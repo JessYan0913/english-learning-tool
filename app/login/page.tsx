@@ -1,31 +1,33 @@
-"use client"
-import { useState } from "react"
-import type React from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+'use client';
+import { useState } from 'react';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import type React from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 
 export default function LoginPage() {
-  const router = useRouter()
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  })
+    email: '',
+    password: '',
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     localStorage.setItem(
-      "user",
+      'user',
       JSON.stringify({
         email: formData.email,
-        name: formData.email.split("@")[0],
+        name: formData.email.split('@')[0],
         loginTime: new Date().toISOString(),
-      }),
-    )
-    router.push("/")
-  }
+      })
+    );
+    router.push('/');
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-8">
@@ -67,7 +69,7 @@ export default function LoginPage() {
 
             <div className="mt-8 text-center">
               <p className="text-muted-foreground">
-                还没有账号？{" "}
+                还没有账号？{' '}
                 <Link href="/register" className="text-primary hover:underline font-medium">
                   立即注册
                 </Link>
@@ -77,5 +79,5 @@ export default function LoginPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

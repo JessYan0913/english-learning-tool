@@ -1,7 +1,10 @@
-"use client"
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { useTheme } from "next-themes"
+'use client';
+import { useEffect, useState } from 'react';
+
+import { BarChart3, Home, Info, LogIn, Menu, Monitor, Moon, Settings, Sun, UserPlus } from 'lucide-react';
+import Link from 'next/link';
+import { useTheme } from 'next-themes';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,28 +12,27 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Menu, Home, BarChart3, Settings, Info, LogIn, UserPlus, Sun, Moon, Monitor } from "lucide-react"
+} from '@/components/ui/dropdown-menu';
 
 export default function GlobalMenu() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   const menuItems = [
-    { href: "/", label: "学习首页", icon: Home, shortcut: "Ctrl+H" },
-    { href: "/stats", label: "学习统计", icon: BarChart3, shortcut: "Ctrl+S" },
-    { href: "/settings", label: "设置", icon: Settings, shortcut: "Ctrl+," },
-    { href: "/about", label: "关于", icon: Info, shortcut: "Ctrl+I" },
-  ]
+    { href: '/', label: '学习首页', icon: Home, shortcut: 'Ctrl+H' },
+    { href: '/stats', label: '学习统计', icon: BarChart3, shortcut: 'Ctrl+S' },
+    { href: '/settings', label: '设置', icon: Settings, shortcut: 'Ctrl+,' },
+    { href: '/about', label: '关于', icon: Info, shortcut: 'Ctrl+I' },
+  ];
 
   const accountItems = [
-    { href: "/login", label: "登录", icon: LogIn },
-    { href: "/register", label: "注册", icon: UserPlus },
-  ]
+    { href: '/login', label: '登录', icon: LogIn },
+    { href: '/register', label: '注册', icon: UserPlus },
+  ];
 
   return (
     <div className="fixed top-6 left-6 z-50">
@@ -50,7 +52,7 @@ export default function GlobalMenu() {
           sideOffset={8}
         >
           {menuItems.map((item) => {
-            const IconComponent = item.icon
+            const IconComponent = item.icon;
             return (
               <DropdownMenuItem key={item.href} asChild>
                 <Link
@@ -66,7 +68,7 @@ export default function GlobalMenu() {
                   </span>
                 </Link>
               </DropdownMenuItem>
-            )
+            );
           })}
 
           <DropdownMenuSeparator className="border-gray-200/60 dark:border-gray-700/60 my-3" />
@@ -76,7 +78,7 @@ export default function GlobalMenu() {
           </DropdownMenuLabel>
 
           {accountItems.map((item) => {
-            const IconComponent = item.icon
+            const IconComponent = item.icon;
             return (
               <DropdownMenuItem key={item.href} asChild>
                 <Link
@@ -87,7 +89,7 @@ export default function GlobalMenu() {
                   <span className="text-sm">{item.label}</span>
                 </Link>
               </DropdownMenuItem>
-            )
+            );
           })}
 
           <DropdownMenuSeparator className="border-gray-200/60 dark:border-gray-700/60 mt-3" />
@@ -99,31 +101,31 @@ export default function GlobalMenu() {
           {mounted && (
             <div className="flex items-center justify-center space-x-1 px-3 py-2">
               <button
-                onClick={() => setTheme("light")}
+                onClick={() => setTheme('light')}
                 className={`w-8 h-8 border rounded flex items-center justify-center transition-colors ${
-                  theme === "light"
-                    ? "bg-blue-500 border-blue-600 text-white"
-                    : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  theme === 'light'
+                    ? 'bg-blue-500 border-blue-600 text-white'
+                    : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                 }`}
               >
                 <Sun className="w-4 h-4" />
               </button>
               <button
-                onClick={() => setTheme("dark")}
+                onClick={() => setTheme('dark')}
                 className={`w-8 h-8 border rounded flex items-center justify-center transition-colors ${
-                  theme === "dark"
-                    ? "bg-blue-500 border-blue-600 text-white"
-                    : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  theme === 'dark'
+                    ? 'bg-blue-500 border-blue-600 text-white'
+                    : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                 }`}
               >
                 <Moon className="w-4 h-4" />
               </button>
               <button
-                onClick={() => setTheme("system")}
+                onClick={() => setTheme('system')}
                 className={`w-8 h-8 border rounded flex items-center justify-center transition-colors ${
-                  theme === "system"
-                    ? "bg-blue-500 border-blue-600 text-white"
-                    : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  theme === 'system'
+                    ? 'bg-blue-500 border-blue-600 text-white'
+                    : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                 }`}
               >
                 <Monitor className="w-4 h-4" />
@@ -133,5 +135,5 @@ export default function GlobalMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  )
+  );
 }

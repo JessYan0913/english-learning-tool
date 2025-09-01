@@ -1,7 +1,8 @@
-"use client"
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
+'use client';
+import { useEffect, useState } from 'react';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 
 export default function StatsPage() {
   const [stats, setStats] = useState({
@@ -11,16 +12,16 @@ export default function StatsPage() {
     totalAnswers: 0,
     streak: 0,
     phrasesLearned: 0,
-  })
+  });
 
   useEffect(() => {
-    const savedStats = localStorage.getItem("learningStats")
+    const savedStats = localStorage.getItem('learningStats');
     if (savedStats) {
-      setStats(JSON.parse(savedStats))
+      setStats(JSON.parse(savedStats));
     }
-  }, [])
+  }, []);
 
-  const accuracy = stats.totalAnswers > 0 ? Math.round((stats.correctAnswers / stats.totalAnswers) * 100) : 0
+  const accuracy = stats.totalAnswers > 0 ? Math.round((stats.correctAnswers / stats.totalAnswers) * 100) : 0;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-8">
@@ -107,5 +108,5 @@ export default function StatsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

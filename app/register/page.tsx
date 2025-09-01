@@ -1,43 +1,45 @@
-"use client"
-import { useState } from "react"
-import type React from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/hooks/use-toast"
+'use client';
+import { useState } from 'react';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import type React from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const { toast } = useToast()
+  const router = useRouter();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  })
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       toast({
-        title: "密码不匹配",
-        description: "请确保两次输入的密码相同",
-        variant: "destructive",
-      })
-      return
+        title: '密码不匹配',
+        description: '请确保两次输入的密码相同',
+        variant: 'destructive',
+      });
+      return;
     }
     localStorage.setItem(
-      "user",
+      'user',
       JSON.stringify({
         name: formData.name,
         email: formData.email,
         registerTime: new Date().toISOString(),
-      }),
-    )
-    router.push("/")
-  }
+      })
+    );
+    router.push('/');
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-8">
@@ -101,7 +103,7 @@ export default function RegisterPage() {
 
             <div className="mt-8 text-center">
               <p className="text-muted-foreground">
-                已有账号？{" "}
+                已有账号？{' '}
                 <Link href="/login" className="text-primary hover:underline font-medium">
                   立即登录
                 </Link>
@@ -111,5 +113,5 @@ export default function RegisterPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
