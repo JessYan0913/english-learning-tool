@@ -98,17 +98,10 @@ export default function SummaryPage() {
         </div>
 
         <div className="flex justify-center gap-8">
-          <Button
-            onClick={handleBackToHome}
-            variant="outline"
-            className="rounded-full px-16 py-5 text-xl font-medium"
-          >
+          <Button onClick={handleBackToHome} variant="outline" className="rounded-full px-16 py-5 text-xl font-medium">
             返回首页
           </Button>
-          <Button
-            onClick={handleRestartLearning}
-            className="rounded-full px-16 py-5 text-xl font-medium"
-          >
+          <Button onClick={handleRestartLearning} className="rounded-full px-16 py-5 text-xl font-medium">
             重新学习
           </Button>
         </div>

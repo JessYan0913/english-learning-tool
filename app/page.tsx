@@ -347,20 +347,10 @@ export default function EnglishLearningTool() {
             </div>
 
             <div className="flex justify-center gap-6">
-              <Button
-                onClick={handleViewSummary}
-                className="bg-primary hover:bg-primary/90 text-accent-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
-                variant="secondary"
-                size="lg"
-              >
+              <Button className="h-12 text-lg" onClick={handleViewSummary} size="lg">
                 查看学习总结
               </Button>
-              <Button
-                onClick={handleRestart}
-                className="bg-accent hover:bg-accent/90 text-accent-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
-                variant="secondary"
-                size="lg"
-              >
+              <Button className="h-12 text-lg" onClick={handleRestart} size="lg">
                 重新开始
               </Button>
             </div>
@@ -390,12 +380,7 @@ export default function EnglishLearningTool() {
             </div>
 
             <div className="flex items-center justify-center">
-              <Button
-                onClick={handleStartPractice}
-                className="bg-primary hover:bg-primary/90 text-accent-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all"
-                variant="secondary"
-                size="lg"
-              >
+              <Button onClick={handleStartPractice} className="h-12 text-lg" size="lg">
                 开始练习 <span className="text-sm opacity-75">(Enter)</span>
               </Button>
             </div>
@@ -442,13 +427,7 @@ export default function EnglishLearningTool() {
 
               <div className="mt-8 flex justify-center">
                 {!showResult ? (
-                  <Button
-                    onClick={handleSubmitAnswer}
-                    disabled={!userAnswer.trim()}
-                    className="bg-primary hover:bg-primary/90 text-accent-foreground rounded-full px-16 py-4 text-xl font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
-                    variant="secondary"
-                    size="lg"
-                  >
+                  <Button onClick={handleSubmitAnswer} disabled={!userAnswer.trim()} size="lg">
                     检查答案
                   </Button>
                 ) : isCorrect ? (
@@ -461,12 +440,7 @@ export default function EnglishLearningTool() {
             </div>
 
             <div className="flex items-center justify-center gap-8">
-              <Button
-                size="lg"
-                onClick={handleBackToLearn}
-                className="rounded-full px-8 py-3 hover:bg-muted text-muted-foreground"
-                variant="ghost"
-              >
+              <Button size="lg" onClick={handleBackToLearn} variant="ghost">
                 返回学习 <span className="text-xs text-muted-foreground/60">(Esc)</span>
               </Button>
 
@@ -486,7 +460,6 @@ export default function EnglishLearningTool() {
                     inputRef.current?.clear();
                   }
                 }}
-                className="rounded-full px-12 py-4 text-xl font-medium border-2 border-border hover:bg-muted bg-transparent"
                 variant="outline"
               >
                 跳过
