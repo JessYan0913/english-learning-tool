@@ -17,25 +17,34 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnHome = nextUrl.pathname.startsWith('/');
-      const isOnRegister = nextUrl.pathname.startsWith('/register');
-      const isOnLogin = nextUrl.pathname.startsWith('/login');
 
+      // 处理国际化路由，移除语言前缀来获取实际路径
+      const pathname = nextUrl.pathname;
+      const localeRegex = /^\/(en|ja|zh)(\/.*)?$/;
+      const match = pathname.match(localeRegex);
+      const actualPath = match ? match[2] || '/' : pathname;
+
+      // 判断当前页面类型
+      const isOnHome = actualPath === '/';
+      const isOnLogin = actualPath.startsWith('/login');
+      const isOnRegister = actualPath.startsWith('/register');
+
+      // 公开页面：仅首页、登录页、注册页
+      const isPublicPage = isOnHome || isOnLogin || isOnRegister;
+
+      // 如果已登录用户访问登录或注册页面，重定向到首页
       if (isLoggedIn && (isOnLogin || isOnRegister)) {
         return Response.redirect(new URL('/', nextUrl as unknown as URL));
       }
 
-      if (isOnRegister || isOnLogin) {
-        return true; // Always allow access to register and login pages
+      // 公开页面允许访问
+      if (isPublicPage) {
+        return true;
       }
 
-      if (isOnHome) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      }
-
-      if (isLoggedIn) {
-        return Response.redirect(new URL('/', nextUrl as unknown as URL));
+      // 其他页面需要登录
+      if (!isLoggedIn) {
+        return false; // 这会重定向到登录页面
       }
 
       return true;
