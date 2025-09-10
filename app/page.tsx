@@ -198,21 +198,91 @@ export default function EnglishLearningTool() {
     setMode('learn');
   };
 
+  const calculateLevenshteinDistance = (str1: string, str2: string): number => {
+    const m = str1.length;
+    const n = str2.length;
+    const dp: number[][] = Array(m + 1)
+      .fill(0)
+      .map(() => Array(n + 1).fill(0));
+
+    for (let i = 0; i <= m; i++) {
+      dp[i][0] = i;
+    }
+    for (let j = 0; j <= n; j++) {
+      dp[0][j] = j;
+    }
+
+    for (let i = 1; i <= m; i++) {
+      for (let j = 1; j <= n; j++) {
+        if (str1[i - 1] === str2[j - 1]) {
+          dp[i][j] = dp[i - 1][j - 1];
+        } else {
+          dp[i][j] =
+            1 +
+            Math.min(
+              dp[i - 1][j], // 删除
+              dp[i][j - 1], // 插入
+              dp[i - 1][j - 1] // 替换
+            );
+        }
+      }
+    }
+
+    return dp[m][n];
+  };
+
+  const normalizeText = (text: string): string => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[.,!?;:]/g, '');
+  };
+
   const handleSubmitAnswer = useCallback(() => {
-    const correctAnswerClean = phrase.exercises[currentExercise].answer.toLowerCase().trim();
-    const userAnswerClean = userAnswer.toLowerCase().trim();
-    const correct = correctAnswerClean === userAnswerClean;
+    const correctAnswer = phrase.exercises[currentExercise].answer;
+    const targetPhrase = phrase.phrase; // 获取目标短语
+    const normalizedUserAnswer = normalizeText(userAnswer);
+    const normalizedCorrectAnswer = normalizeText(correctAnswer);
+    const normalizedTargetPhrase = normalizeText(targetPhrase);
+
+    // 1. 首先检查是否包含目标短语
+    if (!normalizedUserAnswer.includes(normalizedTargetPhrase)) {
+      setIsCorrect(false);
+      setShowResult(true);
+
+      // 高亮显示缺失的目标短语
+      inputRef.current?.highlightWords([], [targetPhrase]);
+      return;
+    }
+
+    // 2. 计算编辑距离
+    const distance = calculateLevenshteinDistance(normalizedUserAnswer, normalizedCorrectAnswer);
+    const maxLength = Math.max(normalizedUserAnswer.length, normalizedCorrectAnswer.length);
+    const similarity = maxLength > 0 ? (maxLength - distance) / maxLength : 0;
+
+    // 3. 判定是否正确（相似度大于80%或编辑距离小于等于2）
+    const correct = similarity >= 0.8 || distance <= 2;
 
     setIsCorrect(correct);
     setShowResult(true);
 
     if (!correct) {
-      const correctWords = correctAnswerClean.split(/\s+/);
-      const userWords = userAnswerClean.split(/\s+/);
-      const incorrectWords = userWords.filter((word) => !correctWords.includes(word));
-      const correctUserWords = userWords.filter((word) => correctWords.includes(word));
+      // 高亮显示错误部分
+      const userWords = normalizedUserAnswer.split(/\s+/);
+      const correctWords = normalizedCorrectAnswer.split(/\s+/);
 
-      inputRef.current?.highlightWords(correctUserWords, incorrectWords);
+      const matchedWords: string[] = [];
+      const unmatchedWords: string[] = [];
+
+      userWords.forEach((word) => {
+        if (correctWords.includes(word)) {
+          matchedWords.push(word);
+        } else {
+          unmatchedWords.push(word);
+        }
+      });
+
+      inputRef.current?.highlightWords(matchedWords, unmatchedWords);
     }
 
     if (correct) {
@@ -240,7 +310,7 @@ export default function EnglishLearningTool() {
         }
       }, 1500);
     }
-  }, [currentExercise, currentPhrase, inputRef, phrase.exercises, userAnswer]);
+  }, [currentExercise, currentPhrase, inputRef, phrase.exercises, phrase.phrase, userAnswer]);
 
   const handleInputChange = (value: string) => {
     setUserAnswer(value);

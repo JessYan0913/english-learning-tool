@@ -76,8 +76,13 @@ const TiptapInput = forwardRef<TiptapInputRef, TiptapInputProps>(
 
       isUpdatingRef.current = true;
 
-      const userWords = currentText.toLowerCase().split(/\s+/);
-      const expectedWords = expectedAnswer.toLowerCase().split(/\s+/);
+      // 定义与 normalizeText 相同的标点符号移除函数
+      const removePunctuation = (text: string): string => {
+        return text.toLowerCase().replace(/[.,!?;:]/g, '');
+      };
+
+      const userWords = removePunctuation(currentText).split(/\s+/);
+      const expectedWords = removePunctuation(expectedAnswer).split(/\s+/);
 
       // 清除所有颜色样式
       editor.commands.selectAll();
@@ -94,10 +99,16 @@ const TiptapInput = forwardRef<TiptapInputRef, TiptapInputProps>(
           editor.commands.setTextSelection({ from: wordStart + 1, to: wordEnd + 1 });
 
           if (index < expectedWords.length) {
+            // 获取当前光标位置
+            const cursorPos = editor.state.selection.from - 1;
+            // 判断当前单词是否是光标所在的单词（即正在输入的单词）
+            const isCurrentWord = cursorPos >= wordStart && cursorPos <= wordEnd;
+
             if (word === expectedWords[index]) {
               // 正确单词显示绿色
               editor.commands.setColor('#22c55e');
-            } else if (expectedWords[index].startsWith(word)) {
+            } else if (!isCurrentWord && expectedWords[index].startsWith(word)) {
+              // 仅当不是当前正在输入的单词时，才标记为橙色（部分正确）
               editor.commands.setColor('#f59e0b');
             } else {
               // 错误单词显示红色
