@@ -1,12 +1,12 @@
 'use client';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import confetti from 'canvas-confetti';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-
-import TiptapInput, { type TiptapInputRef } from '../components/tiptap-input';
+import TiptapInput, { type TiptapInputRef } from '@/components/tiptap-input';
 import { calculateLevenshteinDistance, normalizeText } from '@/lib/utils';
 
 // 词组数据
