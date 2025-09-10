@@ -10,47 +10,32 @@ export const authConfig = {
     // while this file is also used in non-Node.js environments
   ],
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Redirect to the homepage after successful login
+      if (url.startsWith(baseUrl)) return url;
+      return baseUrl;
+    },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnRegister = nextUrl.pathname.includes('/register');
-      const isOnLogin = nextUrl.pathname.includes('/login');
-      const isPublicPage = isOnRegister || isOnLogin;
-      const isApiRoute = nextUrl.pathname.startsWith('/api');
-      const isPdfRender =
-        /^\/(en|fr|zh)\/pdf-render\//.test(nextUrl.pathname) || nextUrl.pathname.startsWith('/pdf-render/');
+      const isOnHome = nextUrl.pathname.startsWith('/');
+      const isOnRegister = nextUrl.pathname.startsWith('/register');
+      const isOnLogin = nextUrl.pathname.startsWith('/login');
 
-      // API路由的认证处理
-      if (isApiRoute) {
-        if (!isLoggedIn) {
-          return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-            status: 401,
-            headers: { 'Content-Type': 'application/json' },
-          });
-        }
-        return true;
-      }
-
-      // 允许未登录访问用于生成PDF的渲染页面
-      if (isPdfRender) {
-        return true;
-      }
-
-      // 如果已登录且访问登录/注册页面，重定向到首页
-      if (isLoggedIn && isPublicPage) {
+      if (isLoggedIn && (isOnLogin || isOnRegister)) {
         return Response.redirect(new URL('/', nextUrl as unknown as URL));
       }
 
-      // 允许访问登录和注册页面
-      if (isPublicPage) {
-        return true;
+      if (isOnRegister || isOnLogin) {
+        return true; // Always allow access to register and login pages
       }
 
-      // 对于其他页面，检查登录状态
-      if (!isLoggedIn) {
-        const loginUrl = new URL('/login', nextUrl.origin);
-        // 保存原始URL用于登录后重定向
-        loginUrl.searchParams.set('callbackUrl', nextUrl.href);
-        return Response.redirect(loginUrl);
+      if (isOnHome) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login page
+      }
+
+      if (isLoggedIn) {
+        return Response.redirect(new URL('/', nextUrl as unknown as URL));
       }
 
       return true;

@@ -4,19 +4,14 @@ import { createI18nMiddleware } from 'next-international/middleware';
 import { auth } from '@/lib/auth';
 
 const I18nMiddleware = createI18nMiddleware({
-  locales: ['en', 'fr', 'zh'],
+  locales: ['en', 'ja', 'zh'],
   defaultLocale: 'en',
 });
 
 export default auth((request: NextRequest) => {
-  // API路由不需要国际化处理
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    return;
-  }
-
   return I18nMiddleware(request);
 });
 
 export const config = {
-  matcher: ['/', '/((?!static|.*\\..*|_next|favicon.ico|robots.txt).*)'],
+  matcher: ['/', '/login', '/register', '/((?!api|static|.*\\..*|_next|favicon.ico|robots.txt).*)'],
 };
