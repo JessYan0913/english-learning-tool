@@ -343,15 +343,13 @@ export default function EnglishLearningTool() {
 
   const renderProgress = () => {
     const phraseProgress = ((currentPhraseIndex + 1) / phrases.length) * 100;
-    const exerciseProgress =
-      mode === 'practice' ? ((currentExerciseIndex + 1) / currentPhrase.exercises.length) * 100 : 0;
 
     return (
-      <div className="mb-40 relative">
+      <div className="mb-12">
         <div className="text-sm text-muted-foreground mb-2">
           词组进度：{currentPhraseIndex + 1} / {phrases.length}
         </div>
-        <div className="w-full bg-muted rounded-full h-4 relative">
+        <div className="w-full bg-muted rounded-full h-4">
           <div
             className="bg-primary h-4 rounded-full transition-all duration-500"
             style={{ width: `${phraseProgress}%` }}
@@ -361,18 +359,12 @@ export default function EnglishLearningTool() {
             aria-valuemax={100}
             aria-label={`词组学习进度：${currentPhraseIndex + 1} / ${phrases.length}`}
           />
-          {mode === 'practice' && (
-            <div
-              className="bg-secondary h-3 rounded-full absolute top-1/2 transform -translate-y-1/2 transition-all duration-500"
-              style={{ width: `${exerciseProgress}%`, left: `${(phraseProgress / 100) * 100}%` }}
-              role="progressbar"
-              aria-valuenow={exerciseProgress}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={`当前词组练习进度：${currentExerciseIndex + 1} / ${currentPhrase.exercises.length}`}
-            />
-          )}
         </div>
+        {mode === 'practice' && (
+          <div className="text-sm text-muted-foreground mt-2">
+            练习进度：{currentExerciseIndex + 1} / {currentPhrase.exercises.length}
+          </div>
+        )}
       </div>
     );
   };
