@@ -3,6 +3,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 import { Color } from '@tiptap/extension-color';
+import { normalizeText } from '@/lib/utils';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -76,13 +77,8 @@ const TiptapInput = forwardRef<TiptapInputRef, TiptapInputProps>(
 
       isUpdatingRef.current = true;
 
-      // 定义与 normalizeText 相同的标点符号移除函数
-      const removePunctuation = (text: string): string => {
-        return text.toLowerCase().replace(/[.,!?;:]/g, '');
-      };
-
-      const userWords = removePunctuation(currentText).split(/\s+/);
-      const expectedWords = removePunctuation(expectedAnswer).split(/\s+/);
+      const userWords = normalizeText(currentText).split(/\s+/);
+      const expectedWords = normalizeText(expectedAnswer).split(/\s+/);
 
       // 清除所有颜色样式
       editor.commands.selectAll();
