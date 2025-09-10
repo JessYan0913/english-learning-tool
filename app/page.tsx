@@ -143,18 +143,17 @@ const phrases = [
 
 export default function EnglishLearningTool() {
   const router = useRouter();
-  const [currentPhrase, setCurrentPhrase] = useState(0);
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [mode, setMode] = useState<'learn' | 'practice' | 'completed'>('learn');
-  const [currentExercise, setCurrentExercise] = useState(0);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const inputRef = useRef<TiptapInputRef>(null);
 
-  const phrase = phrases[currentPhrase];
+  const currentPhrase = phrases[currentPhraseIndex];
 
   const triggerCelebration = () => {
-    // 左下角喷射
     confetti({
       particleCount: 100,
       angle: 60,
@@ -162,8 +161,6 @@ export default function EnglishLearningTool() {
       origin: { x: 0, y: 1 },
       colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'],
     });
-
-    // 右下角喷射
     confetti({
       particleCount: 100,
       angle: 120,
@@ -171,8 +168,6 @@ export default function EnglishLearningTool() {
       origin: { x: 1, y: 1 },
       colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'],
     });
-
-    // 延迟第二波庆祝
     setTimeout(() => {
       confetti({
         particleCount: 50,
@@ -188,50 +183,47 @@ export default function EnglishLearningTool() {
     if (mode === 'practice' && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [mode, currentExercise]);
+  }, [mode, currentExerciseIndex]);
 
   const handleStartPractice = () => {
     setMode('practice');
-    setCurrentExercise(0);
+    setCurrentExerciseIndex(0);
+    setUserAnswer('');
+    setShowResult(false);
   };
 
   const handleBackToLearn = () => {
     setMode('learn');
+    setUserAnswer('');
+    setShowResult(false);
+    inputRef.current?.clear();
   };
 
   const handleSubmitAnswer = useCallback(() => {
-    const correctAnswer = phrase.exercises[currentExercise].answer;
-    const targetPhrase = phrase.phrase; // 获取目标短语
+    const correctAnswer = currentPhrase.exercises[currentExerciseIndex].answer;
+    const targetPhrase = currentPhrase.phrase;
     const normalizedUserAnswer = normalizeText(userAnswer);
     const normalizedCorrectAnswer = normalizeText(correctAnswer);
     const normalizedTargetPhrase = normalizeText(targetPhrase);
 
-    // 1. 首先检查是否包含目标短语
     if (!normalizedUserAnswer.includes(normalizedTargetPhrase)) {
       setIsCorrect(false);
       setShowResult(true);
-
-      // 高亮显示缺失的目标短语
       inputRef.current?.highlightWords([], [targetPhrase]);
       return;
     }
 
-    // 2. 计算编辑距离
     const distance = calculateLevenshteinDistance(normalizedUserAnswer, normalizedCorrectAnswer);
     const maxLength = Math.max(normalizedUserAnswer.length, normalizedCorrectAnswer.length);
     const similarity = maxLength > 0 ? (maxLength - distance) / maxLength : 0;
-
-    // 3. 判定是否正确（相似度大于80%或编辑距离小于等于2）
     const correct = similarity >= 0.8 || distance <= 2;
 
     setIsCorrect(correct);
     setShowResult(true);
 
     if (!correct) {
-      // 高亮显示错误部分
       const userWords = normalizedUserAnswer.split(/\s+/);
       const correctWords = normalizedCorrectAnswer.split(/\s+/);
-
       const matchedWords: string[] = [];
       const unmatchedWords: string[] = [];
 
@@ -244,34 +236,30 @@ export default function EnglishLearningTool() {
       });
 
       inputRef.current?.highlightWords(matchedWords, unmatchedWords);
-    }
-
-    if (correct) {
+    } else {
       setTimeout(() => {
-        if (currentExercise < phrase.exercises.length - 1) {
-          setCurrentExercise(currentExercise + 1);
+        if (currentExerciseIndex < currentPhrase.exercises.length - 1) {
+          setCurrentExerciseIndex((prev) => prev + 1);
+          setUserAnswer('');
+          setShowResult(false);
+          inputRef.current?.clear();
+        } else if (currentPhraseIndex < phrases.length - 1) {
+          setCurrentPhraseIndex((prev) => prev + 1);
+          setMode('learn');
+          setCurrentExerciseIndex(0);
           setUserAnswer('');
           setShowResult(false);
           inputRef.current?.clear();
         } else {
-          if (currentPhrase < phrases.length - 1) {
-            setCurrentPhrase(currentPhrase + 1);
-            setMode('learn');
-            setCurrentExercise(0);
-            setUserAnswer('');
-            setShowResult(false);
-            inputRef.current?.clear();
-          } else {
-            setMode('completed');
-            triggerCelebration();
-            setUserAnswer('');
-            setShowResult(false);
-            inputRef.current?.clear();
-          }
+          setMode('completed');
+          triggerCelebration();
+          setUserAnswer('');
+          setShowResult(false);
+          inputRef.current?.clear();
         }
       }, 1500);
     }
-  }, [currentExercise, currentPhrase, inputRef, phrase.exercises, phrase.phrase, userAnswer]);
+  }, [currentExerciseIndex, currentPhraseIndex, userAnswer, currentPhrase]);
 
   const handleInputChange = (value: string) => {
     setUserAnswer(value);
@@ -281,20 +269,24 @@ export default function EnglishLearningTool() {
   };
 
   const handleNextPhrase = useCallback(() => {
-    if (currentPhrase < phrases.length - 1) {
-      setCurrentPhrase(currentPhrase + 1);
+    if (currentPhraseIndex < phrases.length - 1) {
+      setCurrentPhraseIndex((prev) => prev + 1);
       setMode('learn');
-      setCurrentExercise(0);
+      setCurrentExerciseIndex(0);
+      setUserAnswer('');
+      setShowResult(false);
     }
-  }, [currentPhrase]);
+  }, [currentPhraseIndex]);
 
   const handlePrevPhrase = useCallback(() => {
-    if (currentPhrase > 0) {
-      setCurrentPhrase(currentPhrase - 1);
+    if (currentPhraseIndex > 0) {
+      setCurrentPhraseIndex((prev) => prev - 1);
       setMode('learn');
-      setCurrentExercise(0);
+      setCurrentExerciseIndex(0);
+      setUserAnswer('');
+      setShowResult(false);
     }
-  }, [currentPhrase]);
+  }, [currentPhraseIndex]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -318,18 +310,27 @@ export default function EnglishLearningTool() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentPhrase, mode, userAnswer, showResult, handleNextPhrase, handlePrevPhrase, handleSubmitAnswer]);
+  }, [
+    mode,
+    userAnswer,
+    showResult,
+    handleSubmitAnswer,
+    handleNextPhrase,
+    handlePrevPhrase,
+    handleStartPractice,
+    handleBackToLearn,
+  ]);
 
   const handleRestart = () => {
-    setCurrentPhrase(0);
+    setCurrentPhraseIndex(0);
     setMode('learn');
-    setCurrentExercise(0);
+    setCurrentExerciseIndex(0);
     setUserAnswer('');
     setShowResult(false);
+    inputRef.current?.clear();
   };
 
   const handleViewSummary = () => {
-    // 将学习数据存储到localStorage，以便总结页面使用
     localStorage.setItem(
       'learningData',
       JSON.stringify({
@@ -340,15 +341,51 @@ export default function EnglishLearningTool() {
     router.push('/summary');
   };
 
+  const renderProgress = () => {
+    const phraseProgress = ((currentPhraseIndex + 1) / phrases.length) * 100;
+    const exerciseProgress =
+      mode === 'practice' ? ((currentExerciseIndex + 1) / currentPhrase.exercises.length) * 100 : 0;
+
+    return (
+      <div className="mb-40 relative">
+        <div className="text-sm text-muted-foreground mb-2">
+          词组进度：{currentPhraseIndex + 1} / {phrases.length}
+        </div>
+        <div className="w-full bg-muted rounded-full h-4 relative">
+          <div
+            className="bg-primary h-4 rounded-full transition-all duration-500"
+            style={{ width: `${phraseProgress}%` }}
+            role="progressbar"
+            aria-valuenow={phraseProgress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`词组学习进度：${currentPhraseIndex + 1} / ${phrases.length}`}
+          />
+          {mode === 'practice' && (
+            <div
+              className="bg-secondary h-3 rounded-full absolute top-1/2 transform -translate-y-1/2 transition-all duration-500"
+              style={{ width: `${exerciseProgress}%`, left: `${(phraseProgress / 100) * 100}%` }}
+              role="progressbar"
+              aria-valuenow={exerciseProgress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`当前词组练习进度：${currentExerciseIndex + 1} / ${currentPhrase.exercises.length}`}
+            />
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8 relative">
       {mode !== 'completed' && (
         <>
           <Button
             onClick={handlePrevPhrase}
-            disabled={currentPhrase === 0 || mode === 'practice'}
+            disabled={currentPhraseIndex === 0 || mode === 'practice'}
             className="fixed left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-card shadow-lg hover:shadow-xl border border-border flex items-center justify-center text-2xl text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-all z-10"
-            title={`上一个词组 (←) ${currentPhrase > 0 ? phrases[currentPhrase - 1].phrase : ''}`}
+            title={`上一个词组 (←) ${currentPhraseIndex > 0 ? phrases[currentPhraseIndex - 1].phrase : ''}`}
             variant="outline"
             size="icon"
           >
@@ -357,9 +394,9 @@ export default function EnglishLearningTool() {
 
           <Button
             onClick={handleNextPhrase}
-            disabled={currentPhrase === phrases.length - 1 || mode === 'practice'}
+            disabled={currentPhraseIndex === phrases.length - 1 || mode === 'practice'}
             className="fixed right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-card shadow-lg hover:shadow-xl border border-border flex items-center justify-center text-2xl text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-all z-10"
-            title={`下一个词组 (→) ${currentPhrase < phrases.length - 1 ? phrases[currentPhrase + 1].phrase : ''}`}
+            title={`下一个词组 (→) ${currentPhraseIndex < phrases.length - 1 ? phrases[currentPhraseIndex + 1].phrase : ''}`}
             variant="outline"
             size="icon"
           >
@@ -388,25 +425,14 @@ export default function EnglishLearningTool() {
           </div>
         ) : mode === 'learn' ? (
           <div className="text-center">
-            <div className="mb-16">
-              <div className="text-sm text-muted-foreground mb-6">
-                {currentPhrase + 1} / {phrases.length}
-              </div>
-              <div className="w-full bg-muted rounded-full h-1 mb-12">
-                <div
-                  className="bg-primary h-1 rounded-full transition-all duration-500"
-                  style={{ width: `${((currentPhrase + 1) / phrases.length) * 100}%` }}
-                />
-              </div>
-            </div>
-
+            {renderProgress()}
             <div className="mb-20">
               <h1 className="text-6xl md:text-7xl font-bold text-foreground mb-8 font-mono tracking-wide">
-                {phrase.phrase}
+                {currentPhrase.phrase}
               </h1>
-              <p className="text-3xl md:text-4xl text-muted-foreground mb-12 font-light">{phrase.meaning}</p>
+              <p className="text-3xl md:text-4xl text-muted-foreground mb-12 font-light">{currentPhrase.meaning}</p>
               <div className="bg-muted rounded-xl p-8 inline-block">
-                <p className="text-xl md:text-2xl text-muted-foreground italic font-light">{`"${phrase.example}"`}</p>
+                <p className="text-xl md:text-2xl text-muted-foreground italic font-light">{`"${currentPhrase.example}"`}</p>
               </div>
             </div>
 
@@ -418,18 +444,10 @@ export default function EnglishLearningTool() {
           </div>
         ) : (
           <div className="text-center">
-            <div className="mb-16">
-              <div className="text-sm text-muted-foreground mb-4">
-                词组 {currentPhrase + 1} / {phrases.length} · 练习 {currentExercise + 1} / {phrase.exercises.length}
-              </div>
-              <div className="w-full bg-muted rounded-full h-1 mb-8">
-                <div
-                  className="bg-primary h-1 rounded-full transition-all duration-500"
-                  style={{ width: `${((currentExercise + 1) / phrase.exercises.length) * 100}%` }}
-                />
-              </div>
-              <h2 className="text-4xl font-light text-foreground mb-16">{phrase.exercises[currentExercise].chinese}</h2>
-            </div>
+            {renderProgress()}
+            <h2 className="text-4xl font-light text-foreground mb-16">
+              {currentPhrase.exercises[currentExerciseIndex].chinese}
+            </h2>
 
             <div className="mb-16">
               <TiptapInput
@@ -443,7 +461,7 @@ export default function EnglishLearningTool() {
                 }}
                 placeholder="输入英文句子... (按 Enter 提交)"
                 className={showResult && !isCorrect ? 'border-destructive focus-within:border-destructive' : ''}
-                expectedAnswer={phrase.exercises[currentExercise].answer}
+                expectedAnswer={currentPhrase.exercises[currentExerciseIndex].answer}
                 enableRealTimeValidation={true}
               />
 
@@ -451,7 +469,7 @@ export default function EnglishLearningTool() {
                 <div className="mt-4 text-center">
                   <div className="text-destructive text-lg mb-2">请检查输入的内容</div>
                   <div className="text-muted-foreground text-sm">
-                    正确答案：{phrase.exercises[currentExercise].answer}
+                    正确答案：{currentPhrase.exercises[currentExerciseIndex].answer}
                   </div>
                 </div>
               )}
@@ -478,14 +496,14 @@ export default function EnglishLearningTool() {
               <Button
                 size="lg"
                 onClick={() => {
-                  if (currentExercise < phrase.exercises.length - 1) {
-                    setCurrentExercise(currentExercise + 1);
+                  if (currentExerciseIndex < currentPhrase.exercises.length - 1) {
+                    setCurrentExerciseIndex((prev) => prev + 1);
                     setUserAnswer('');
                     setShowResult(false);
                     inputRef.current?.clear();
                   } else {
                     setMode('learn');
-                    setCurrentExercise(0);
+                    setCurrentExerciseIndex(0);
                     setUserAnswer('');
                     setShowResult(false);
                     inputRef.current?.clear();
