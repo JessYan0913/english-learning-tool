@@ -360,11 +360,6 @@ export default function EnglishLearningTool() {
             aria-label={`词组学习进度：${currentPhraseIndex + 1} / ${phrases.length}`}
           />
         </div>
-        {mode === 'practice' && (
-          <div className="text-sm text-muted-foreground mt-2">
-            练习进度：{currentExerciseIndex + 1} / {currentPhrase.exercises.length}
-          </div>
-        )}
       </div>
     );
   };
@@ -418,7 +413,7 @@ export default function EnglishLearningTool() {
         ) : mode === 'learn' ? (
           <div className="text-center">
             {renderProgress()}
-            <div className="mb-20">
+            <div className="mb-20 mt-40">
               <h1 className="text-6xl md:text-7xl font-bold text-foreground mb-8 font-mono tracking-wide">
                 {currentPhrase.phrase}
               </h1>
@@ -437,7 +432,7 @@ export default function EnglishLearningTool() {
         ) : (
           <div className="text-center">
             {renderProgress()}
-            <h2 className="text-4xl font-light text-foreground mb-16">
+            <h2 className="text-4xl font-light text-foreground mb-16 mt-40">
               {currentPhrase.exercises[currentExerciseIndex].chinese}
             </h2>
 
