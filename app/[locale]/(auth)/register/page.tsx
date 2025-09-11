@@ -1,29 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import type React from 'react';
+import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Form, FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+
+interface FormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+  const form = useForm<FormData>({
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
+  const onSubmit = (data: FormData) => {
+    if (data.password !== data.confirmPassword) {
       toast({
         title: '密码不匹配',
         description: '请确保两次输入的密码相同',
@@ -34,8 +41,7 @@ export default function RegisterPage() {
     localStorage.setItem(
       'user',
       JSON.stringify({
-        name: formData.name,
-        email: formData.email,
+        email: data.email,
         registerTime: new Date().toISOString(),
       })
     );
@@ -52,55 +58,70 @@ export default function RegisterPage() {
           </CardHeader>
 
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="姓名"
-                  className="h-12 text-lg"
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  rules={{
+                    required: '请输入邮箱地址',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: '邮箱地址格式不正确',
+                    },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input type="email" placeholder="邮箱地址" className="h-12 text-lg" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div>
-                <Input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="邮箱地址"
-                  className="h-12 text-lg"
+                <FormField
+                  control={form.control}
+                  name="password"
+                  rules={{
+                    required: '请设置密码',
+                    minLength: {
+                      value: 6,
+                      message: '密码长度至少6位',
+                    },
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input type="password" placeholder="设置密码" className="h-12 text-lg" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div>
-                <Input
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  placeholder="设置密码"
-                  className="h-12 text-lg"
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  rules={{
+                    required: '请确认密码',
+                    validate: (value) => value === form.getValues().password || '密码不匹配',
+                  }}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input type="password" placeholder="确认密码" className="h-12 text-lg" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div>
-                <Input
-                  type="password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  placeholder="确认密码"
-                  className="h-12 text-lg"
-                />
-              </div>
-
-              <Button type="submit" className="w-full h-12 text-lg" size="lg">
-                注册
-              </Button>
-            </form>
+                <Button type="submit" className="w-full h-12 text-lg" size="lg">
+                  注册
+                </Button>
+              </form>
+            </Form>
 
             <div className="mt-8 text-center">
               <p className="text-muted-foreground">
